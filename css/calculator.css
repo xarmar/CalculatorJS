@@ -1,0 +1,78 @@
+body {
+    background-image: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%);
+}
+
+#container {
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#calculator {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(7,1fr);
+    background-color: white;
+    margin-top: 5%;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: center;
+    width: 400px;
+    min-height: 400px;
+}
+
+#calculator output {
+    text-align: right;
+    padding-right: 20px;
+    border: 1px solid grey;;
+    background-color: lightgreen;
+}
+
+#calculator button {
+    border: 1px solid grey;;
+}
+
+button:hover {
+    transform: scale(1.03);
+    padding:1px;
+    border: 1px solid grey;;
+    border-color: #96e6a1;
+    box-shadow: 0 0 1em #96e6a1;
+}
+
+.fourCells {
+    grid-column-start: 1;
+    grid-column-end: 5;
+    
+}
+
+.operator {
+    background-color: #96e6a1;
+}
+
+#footer {
+    display: flex;;
+    margin-bottom: 0px;
+    position: absolute;
+    height: 5%;
+    width: 99%;
+    background-color:#FFFFFF; 
+    text-align: center;
+    bottom: 0;
+}
+
+#footer p {
+    margin-left: auto;
+    margin-right: auto;
+    align-self: center;
+    justify-content: center;
+    align-content: center;
+}
+
+#footer a {
+    color: inherit;
+}
+
+#footer svg {
+    margin-left: 7px;
+}
