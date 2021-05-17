@@ -35,9 +35,8 @@ body {
 button:hover {
     transform: scale(1.03);
     padding:1px;
-    border: 1px solid grey;;
-    border-color: #96e6a1;
-    box-shadow: 0 0 1em #96e6a1;
+    border: 1px solid #96e6a1;;
+    box-shadow: 0 0 0.5em #96e6a1;
 }
 
 .fourCells {
@@ -46,8 +45,26 @@ button:hover {
     
 }
 
+.delete {
+    background-color: gainsboro;
+}
+
+.delete:hover {
+    transform: scale(1.03);
+    padding:1px;
+    border: 1px solid #96e6a1;;
+    box-shadow: 0 0 0.5em coral;
+}
+
 .operator {
-    background-color: #96e6a1;
+    background-color: gainsboro;
+}
+
+.operator:hover {
+    transform: scale(1.03);
+    padding:1px;
+    border: 1px solid #96e6a1;;
+    box-shadow: 0 0 0.5em gold;
 }
 
 #footer {
