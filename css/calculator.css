@@ -1,20 +1,23 @@
 body {
-    background-image: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%);
+    background-color: #d4fc79 ;
+    /* background-image: 96e6a1 linear-gradient(120deg, #d4fc79 0%, # 100%); */ */
 }
 
 #container {
     width: 100%;
     margin-left: auto;
     margin-right: auto;
+    
+ 
 }
 
 #screen {
     display: grid;
     justify-items: end;
-    margin-top:3%;
+    margin-top: 5%;
     margin-left: auto;
     margin-right: auto;
-    max-width: 35%;
+    max-width: 40%;
     min-width: 20%;
     height: 80px;
     background-color: gainsboro;  
@@ -29,9 +32,9 @@ body {
     margin-left: auto;
     margin-right: auto;
     justify-content: center;
-    max-width: 35%;
+    max-width: 40%;
     min-width: 20%;
-    min-height: 400px;
+    min-height: 350px;
 }
 
 #calculator output {
@@ -45,6 +48,12 @@ body {
     border: 1px solid grey;;
 }
 
+.fourCells {
+    grid-column-start: 1;
+    grid-column-end: 5;
+    
+}
+
 button:hover {
     transform: scale(1.03);
     padding:1px;
@@ -52,11 +61,6 @@ button:hover {
     box-shadow: 0 0 0.5em #96e6a1;
 }
 
-.fourCells {
-    grid-column-start: 1;
-    grid-column-end: 5;
-    
-}
 
 .delete {
     background-color: gainsboro;
@@ -75,10 +79,27 @@ button:hover {
 
 .operator:hover {
     transform: scale(1.03);
-    padding:1px;
+    padding: 1px;
     border: 1px solid #96e6a1;;
     box-shadow: 0 0 0.5em gold;
 }
+
+.increaseEffect {
+    animation-name: increaseEffect;
+    animation-iteration-count: 1;
+    animation-duration: 0.1s;
+}
+
+@keyframes increaseEffect {
+    0% {
+    }
+    100% {
+    transform: scale(1.15);
+    }
+}
+
+
+
 
 #footer {
     display: flex;;

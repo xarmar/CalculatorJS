@@ -4,11 +4,18 @@ document.addEventListener("DOMContentLoaded", function () {
 const buttons = document.querySelectorAll("button");
 
 buttons.forEach(button => {
-    button.addEventListener("click", input);
+    button.addEventListener("click", increaseOnClick);
 });
 
-function input () {
-    console.log("buttonw was clicked")
+function increaseOnClick (e) {
+    let id = e.target.id;
+    let clickedButton = document.querySelector(`#${id}`);
+    clickedButton.classList.add("increaseEffect");
+    clickedButton.addEventListener('animationend', removeIncrease);
+
+    function removeIncrease() {
+        clickedButton.classList.remove("increaseEffect")
+    }
 }
 
 })
