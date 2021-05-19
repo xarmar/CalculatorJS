@@ -1,59 +1,45 @@
 body {
     background-color: #d4fc79 ;
-    /* background-image: 96e6a1 linear-gradient(120deg, #d4fc79 0%, # 100%); */ */
 }
 
 #container {
     width: 100%;
     margin-left: auto;
     margin-right: auto;
-    
- 
 }
 
-#screen {
-    display: grid;
-    justify-items: end;
-    margin-top: 5%;
+#reducedContainer {
+    margin-top: 6%;
+    max-width: 60%;
     margin-left: auto;
     margin-right: auto;
-    max-width: 40%;
-    min-width: 20%;
-    height: 80px;
-    background-color: gainsboro;  
-    color: black;
-    
 }
 
-#calculator {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(7,1fr);
-    margin-left: auto;
-    margin-right: auto;
-    justify-content: center;
-    max-width: 40%;
-    min-width: 20%;
-    min-height: 350px;
-}
-
-#calculator output {
-    text-align: right;
+output {
+    background: rgba(220, 220, 220, 0.604);
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
     padding-right: 20px;
-    border: 1px solid grey;;
-    background-color: lightgreen;
+    min-height: 25px;
+}
+
+#history {
+    font-size: 110%;
+}
+
+#current {
+    font-size: 150%;
 }
 
 #calculator button {
     border: 1px solid grey;;
 }
-
-.fourCells {
-    grid-column-start: 1;
-    grid-column-end: 5;
-    
+.deleteKeys, .operator {
+    background-color: gainsboro;
 }
 
+/* CLICK AND HOVER EFFECTS */
 button:hover {
     transform: scale(1.03);
     padding:1px;
@@ -61,20 +47,11 @@ button:hover {
     box-shadow: 0 0 0.5em #96e6a1;
 }
 
-
-.delete {
-    background-color: gainsboro;
-}
-
-.delete:hover {
+.deleteKeys:hover {
     transform: scale(1.03);
     padding:1px;
     border: 1px solid #96e6a1;;
     box-shadow: 0 0 0.5em coral;
-}
-
-.operator {
-    background-color: gainsboro;
 }
 
 .operator:hover {
@@ -98,8 +75,104 @@ button:hover {
     }
 }
 
+/* CALCULATOR DISPLAY ORDER */
 
+#calculator {
+    border: grey 5px solid;
+    border-radius: 1%;
+    display: grid;
+    grid-template-areas: 
+    "history history history history"
+    "current current current current"
+    "clear back power division"
+    "seven eight nine multiply"
+    "four five six subtract"
+    "one two three add"
+    "signChange zero decimal equals";
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: center;
+    max-width: 80%;
+    min-width: 20%;
+    min-height: 350px;
+}
 
+#history {
+    grid-area: history;
+}
+
+#current {
+    grid-area: current;
+}
+
+#zero {
+    grid-area: zero;
+}
+
+#one {
+    grid-area: one;
+}
+
+#two {
+    grid-area: two;
+}
+#three {
+    grid-area: three;
+}
+#four {
+    grid-area: four;
+}
+#five {
+    grid-area: five;
+}
+#six {
+    grid-area: six;
+}
+#seven {
+    grid-area: seven;
+}
+#eight {
+    grid-area: eight;
+}
+#nine {
+    grid-area: nine;
+}
+#clear {
+    grid-area: clear;
+}
+#back {
+    grid-area: back;
+}
+#power {
+    grid-area: power;
+}
+#division {
+    grid-area: division;
+}
+#multiply {
+    grid-area: multiply;
+}
+#add {
+    grid-area: add;
+}
+#subtract {
+    grid-area: subtract;
+}
+#equals {
+    grid-area: equals;
+}
+
+#decimal {
+    grid-area: decimal;
+}
+
+#signChange {
+    grid-area: signChange;
+}
+
+/* FOOTER */
 
 #footer {
     display: flex;;

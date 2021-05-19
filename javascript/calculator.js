@@ -1,11 +1,20 @@
-
 document.addEventListener("DOMContentLoaded", function () {
 
+// QUERY SELECTORS
+const MAX_DIGITS = 12;
 const buttons = document.querySelectorAll("button");
+const history = document.querySelector("#history");
+const current = document.querySelector("#current");
 
+const historyArray = [];
+history.textContent= "";
+current.textContent= "";
+
+
+// BUTTON EFFECTS
 buttons.forEach(button => {
-    button.addEventListener("click", increaseOnClick);
     button.addEventListener("click", newInput)
+    button.addEventListener("click", increaseOnClick);
 });
 
 function increaseOnClick (e) {
@@ -17,77 +26,115 @@ function increaseOnClick (e) {
     function removeIncrease() {
         clickedButton.classList.remove("increaseEffect")
     }
+
 }
 
-function newInput(e) {
-    let id = e.target.id;
-    switch (id) {
-        case zero:
+function ButtonIsNumber(pressedButton) {
+    if (pressedButton.classList.contains("number")) {
+       return true
+   }
+   return false
+}
 
-            break;  
-        case one:
-            
-            break;
-        case two:
-            
-            break;
-        case three:
-            
-            break;
-        case four:
-            
-            break;
-        case five:
-            
-            break;
-        case six:
-            
-            break;
-        case seven:
-            
-            break;
-        case eight:
-            
-            break;
-        case nine:
-            
-            break;
-        case signChange:
-            
-            break;
-        case decimal:
-            
-            break;
-        case equals:
-            
-            break;
-        case add:
-            
-            break;
-        case subtract:
-            
-            break;
-        case multiply:
-            
-            break;
-        case division:
-            
-            break;
-        case power:
-            
-            break;
-        case backspace:
-            
-            break;
-        case clear:
-            
-            break;
-        default:
-            break;
+function currentNumberIsZero(current) {
+    if (current.textContent === "0") {
+        return true 
+    }
+    return false;
+}
+
+function currentIsEmpty(current) {
+    if (current.textContent === "") {
+        return true 
+    }
+    return false;    
+}
+
+function maxDigitRuleRespected(current) {
+    let numberSize = current.textContent;
+    console.log(numberSize);
+    console.log(numberSize.length);
+    if (numberSize.length < MAX_DIGITS) {
+        return true
+    }
+    return false
+}
+
+// OPERATIONS
+function newInput(e) {
+    let pressedButton = e.target;
+    if (maxDigitRuleRespected(current) || !pressedButton.classList.contains("number")) {
+        if (ButtonIsNumber(pressedButton)) {
+            if(currentNumberIsZero(current)) {
+            current.textContent = pressedButton.outerText;
+            }
+            else {
+                current.textContent += pressedButton.outerText;
+            }
+        }
+        else {
+            switch (pressedButton.id) {
+                case "back":
+                    let presentNumber = current.textContent;
+                    let newNumber = presentNumber.slice(0,-1);
+                    current.textContent = newNumber;
+                    if (newNumber === "") {
+                        current.textContent = "0"
+                    }
+                    break;
+                case "clear":
+                    history.textContent = "";
+                    current.textContent = "";
+                    historyArray.splice(0, historyArray.length);
+                    break;
+                
+                case "add":
+                    if (!currentIsEmpty(current)) {
+                        historyArray.push(current.textContent);
+                        historyArray.push("+")
+                        history.textContent = historyArray.join(" ");
+                        current.textContent = ""; 
+                    }        
+                    break;
+                case "subtract":
+                    if (!currentIsEmpty(current)) {
+                        historyArray.push(current.textContent);
+                        historyArray.push("-")
+                        history.textContent = historyArray.join(" ");
+                        current.textContent = "";
+                    }            
+                    break;
+                case "division":
+                    if (!currentIsEmpty(current)) {
+                    historyArray.push(current.textContent);
+                    historyArray.push("/")
+                    history.textContent = historyArray.join(" ");
+                    current.textContent = "";   
+                    }             
+                    break;
+                case "multiply":
+                    if (!currentIsEmpty(current)) {
+                    historyArray.push(current.textContent);
+                    historyArray.push("*")
+                    history.textContent = historyArray.join(" ");
+                    current.textContent = "";    
+                    }           
+                    break;
+                case "power":
+                   if (!currentIsEmpty(current)) {
+                   historyArray.push(current.textContent);
+                   historyArray.push("^")
+                   history.textContent = historyArray.join(" ");
+                   current.textContent = "";    
+                   }           
+                   break;
+    
+                default:
+                    break;
+            }
+
+            }
+        }
     }
     
-}
-
-
-
-})
+});
