@@ -1,17 +1,38 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-// QUERY SELECTORS
 const MAX_DIGITS = 12;
+let isFirstCalculation = true;
+
+// QUERY SELECTORS
 const buttons = document.querySelectorAll("button");
 const history = document.querySelector("#history");
 const current = document.querySelector("#current");
-
 const historyArray = [];
-history.textContent= "";
-current.textContent= "";
+let previousNumber;
+clearEverything(history, current, historyArray);
 
+// FUNCTIONS FOR OPERATIONS
+function add(previousNumber, numberToAdd){
+    return parseFloat(previousNumber) + parseFloat(numberToAdd);
+}
 
-// BUTTON EFFECTS
+function subtract(previousNumber, numberToSubtract){
+    return previousNumber - numberToSubtract;
+}
+
+function multiply(previousNumber, multiplier){
+    return previousNumber * multiplier;
+}
+
+function division(previousNumber, divider){
+    return previousNumber / divider;
+}
+
+function power(previousNumber, power){
+    return Math.pow(previousNumber,power) ;
+}
+
+// BUTTON LISTENER
 buttons.forEach(button => {
     button.addEventListener("click", newInput)
     button.addEventListener("click", increaseOnClick);
@@ -29,6 +50,7 @@ function increaseOnClick (e) {
 
 }
 
+// BOOLEAN VALIDATIONS
 function ButtonIsNumber(pressedButton) {
     if (pressedButton.classList.contains("number")) {
        return true
@@ -72,12 +94,30 @@ function clearEverything(history, current, historyArray) {
     history.textContent = "";
     current.textContent = "";
     historyArray.splice(0, historyArray.length);
+    isFirstCalculation = true;
+}
+
+function backspace(presentNumber, current) {
+    let newNumber = presentNumber.slice(0,-1);
+    current.textContent = newNumber;
+    if (currentIsEmpty(current)) {
+        current.textContent = "0"
+    }
+}
+
+function toggleIsFirstCalculation() {
+    if(isFirstCalculation) {
+        isFirstCalculation = false;
+    }
+    else {
+        isFirstCalculation = true;
+    }
 }
 
 // NEW USER INPUT
 function newInput(e) {
     let pressedButton = e.target;
-    // IF IT'S A NUMBER BUTTON
+    // IF IT'S A NUMBER
     if (maxDigitRuleRespected(current) || !pressedButton.classList.contains("number")) {
         if (ButtonIsNumber(pressedButton)) {
             if(currentNumberIsZero(current)) {
@@ -87,27 +127,36 @@ function newInput(e) {
                 current.textContent += pressedButton.outerText;
             }
         }
-        // IF IT'S AN OPERATION BUTTON
+        // IF IT'S AN 'OPERATION' BUTTON
         else {
             switch (pressedButton.id) {
                 case "back":
                     let presentNumber = current.textContent;
-                    let newNumber = presentNumber.slice(0,-1);
-                    current.textContent = newNumber;
-                    if (currentIsEmpty) {
-                        current.textContent = "0"
-                    }
+                    backspace(presentNumber, current);
                     break;
                 case "clear":
-                        clearEverything(history, current, historyArray)
+                    clearEverything(history, current, historyArray)
                     break;
-                
                 case "add":
                     if (!currentIsEmpty(current)) {
-                        historyArray.push(current.textContent);
-                        historyArray.push("+")
-                        history.textContent = historyArray.join(" ");
-                        current.textContent = ""; 
+                        let currentNumber = current.textContent;
+                        if (isFirstCalculation) {
+                            toggleIsFirstCalculation();
+                            historyArray.push(current.textContent);
+                            historyArray.push("+");
+                            history.textContent = historyArray.join(" ");
+                            previousNumber = current.textContent;
+                            current.textContent = ""; 
+                            }
+                        else {
+                            current.textContent = "";
+                            historyArray.push(currentNumber); 
+                            historyArray.push("+");
+                            history.textContent = historyArray.join(" ");
+                            let addition = add(previousNumber, currentNumber);
+                            current.textContent = `${addition}`;
+                            previousNumber = current.textContent;
+                        }
                     }        
                     break;
                 case "subtract":
@@ -148,9 +197,6 @@ function newInput(e) {
                         historyArray.push("=")
                         history.textContent = historyArray.join(" ");
                         current.textContent = "";
-                        // Calculate and Update Current
-                        if(latestOperation = "+") {
-                        } 
                  }           
                     break;
                 case "signalChange":
@@ -176,5 +222,7 @@ function newInput(e) {
             }
         }
     }
+
+
     
 });
