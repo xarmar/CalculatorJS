@@ -50,19 +50,34 @@ function currentIsEmpty(current) {
     return false;    
 }
 
+function alreadyContainsDecimal(current) {;
+    let currentNumber = current.textContent;
+    for (i = 0; i < currentNumber.length; i++) {
+        if (currentNumber[i] === ".") {
+        return true
+        }
+    }
+    return false;
+}
+
 function maxDigitRuleRespected(current) {
     let numberSize = current.textContent;
-    console.log(numberSize);
-    console.log(numberSize.length);
     if (numberSize.length < MAX_DIGITS) {
         return true
     }
     return false
 }
 
-// OPERATIONS
+function clearEverything(history, current, historyArray) {
+    history.textContent = "";
+    current.textContent = "";
+    historyArray.splice(0, historyArray.length);
+}
+
+// NEW USER INPUT
 function newInput(e) {
     let pressedButton = e.target;
+    // IF IT'S A NUMBER BUTTON
     if (maxDigitRuleRespected(current) || !pressedButton.classList.contains("number")) {
         if (ButtonIsNumber(pressedButton)) {
             if(currentNumberIsZero(current)) {
@@ -72,20 +87,19 @@ function newInput(e) {
                 current.textContent += pressedButton.outerText;
             }
         }
+        // IF IT'S AN OPERATION BUTTON
         else {
             switch (pressedButton.id) {
                 case "back":
                     let presentNumber = current.textContent;
                     let newNumber = presentNumber.slice(0,-1);
                     current.textContent = newNumber;
-                    if (newNumber === "") {
+                    if (currentIsEmpty) {
                         current.textContent = "0"
                     }
                     break;
                 case "clear":
-                    history.textContent = "";
-                    current.textContent = "";
-                    historyArray.splice(0, historyArray.length);
+                        clearEverything(history, current, historyArray)
                     break;
                 
                 case "add":
@@ -106,30 +120,56 @@ function newInput(e) {
                     break;
                 case "division":
                     if (!currentIsEmpty(current)) {
-                    historyArray.push(current.textContent);
-                    historyArray.push("/")
-                    history.textContent = historyArray.join(" ");
-                    current.textContent = "";   
+                        historyArray.push(current.textContent);
+                        historyArray.push("/")
+                        history.textContent = historyArray.join(" ");
+                        current.textContent = "";
                     }             
                     break;
                 case "multiply":
                     if (!currentIsEmpty(current)) {
-                    historyArray.push(current.textContent);
-                    historyArray.push("*")
-                    history.textContent = historyArray.join(" ");
-                    current.textContent = "";    
+                        historyArray.push(current.textContent);
+                        historyArray.push("*")
+                        history.textContent = historyArray.join(" ");
+                        current.textContent = "";
                     }           
                     break;
                 case "power":
                    if (!currentIsEmpty(current)) {
-                   historyArray.push(current.textContent);
-                   historyArray.push("^")
-                   history.textContent = historyArray.join(" ");
-                   current.textContent = "";    
+                        historyArray.push(current.textContent);
+                        historyArray.push("^")
+                        history.textContent = historyArray.join(" ");
+                        current.textContent = "";
                    }           
                    break;
-    
-                default:
+                case "equals":
+                 if (!currentIsEmpty(current)) {
+                        historyArray.push(current.textContent);
+                        historyArray.push("=")
+                        history.textContent = historyArray.join(" ");
+                        current.textContent = "";
+                        // Calculate and Update Current
+                        if(latestOperation = "+") {
+                        } 
+                 }           
+                    break;
+                case "signalChange":
+                    if (!currentIsEmpty(current)) {
+                        let presentNumber = current.textContent;
+                        let inverseNumber = presentNumber * (-1);
+                        current.textContent = inverseNumber;    
+                    }           
+                       break;
+                case "decimal":
+                    if (currentIsEmpty(current) || currentNumberIsZero(current)) {
+                        console.log(current.textContent);
+                        current.textContent = "0."
+                    }
+                    else if(!currentIsEmpty(current) && !alreadyContainsDecimal(current)) {
+                        current.textContent += "."
+                    }
+                        break;    
+                    default:
                     break;
             }
 
