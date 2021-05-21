@@ -64,7 +64,7 @@ button:hover {
 .increaseEffect {
     animation-name: increaseEffect;
     animation-iteration-count: 1;
-    animation-duration: 0.1s;
+    animation-duration: 0.07s;
 }
 
 @keyframes increaseEffect {
