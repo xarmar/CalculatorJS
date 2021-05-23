@@ -30,6 +30,7 @@ function increaseOnClick (e) {
 }
 var isFirstCalculation = true;
 var isFirstNumberAfterCalculation;
+var displayingResult;
 let operationPreview;
 let chosenOperator;
 let previousNumber;
@@ -62,32 +63,79 @@ function newInput(e) {
                         // updates display with result
                         presentNumber = currentDisplay.textContent;
                         let result = operate(chosenOperator, previousNumber, presentNumber);
-                        console.log(result);
                         previousNumber = result;
                         updateDisplay(result);
                         isFirstNumberAfterCalculation = true;
+                        chosenOperator = "add";
                     }
                     break;
                 case "subtract":
-                    previousNumber = currentDisplay.textContent;
-                    ifFirstOperationClearDisplay();
-                    chosenOperator = "subtract";
+                    if(isFirstCalculation) {
+                        previousNumber = currentDisplay.textContent;
+                        ifFirstOperationClearDisplay();
+                        chosenOperator = "subtract";
+                        isFirstCalculation  = false;
+                    }
+                    else {
+                        // updates display with result
+                        presentNumber = currentDisplay.textContent;
+                        let result = operate(chosenOperator, previousNumber, presentNumber);
+                        previousNumber = result;
+                        updateDisplay(result);
+                        isFirstNumberAfterCalculation = true;
+                        chosenOperator = "subtract";
+                    }
                     break;
                 case "division":
-                    previousNumber = currentDisplay.textContent;
-                    ifFirstOperationClearDisplay();
-                    chosenOperator = "division";
+                    if(isFirstCalculation) {
+                        previousNumber = currentDisplay.textContent;
+                        ifFirstOperationClearDisplay();
+                        chosenOperator = "division";
+                        isFirstCalculation  = false;
+                    }
+                    else {
+                        // updates display with result
+                        presentNumber = currentDisplay.textContent;
+                        let result = operate(chosenOperator, previousNumber, presentNumber);
+                        previousNumber = result;
+                        updateDisplay(result);
+                        isFirstNumberAfterCalculation = true;
+                        chosenOperator = "division";
+                    }
                     break;
                 case "multiply":
-                    previousNumber = currentDisplay.textContent;
-                    ifFirstOperationClearDisplay();
-                    chosenOperator = "multiply";
+                    if(isFirstCalculation) {
+                        previousNumber = currentDisplay.textContent;
+                        ifFirstOperationClearDisplay();
+                        chosenOperator = "multiply";
+                        isFirstCalculation  = false;
+                    }
+                    else {
+                        // updates display with result
+                        presentNumber = currentDisplay.textContent;
+                        let result = operate(chosenOperator, previousNumber, presentNumber);
+                        previousNumber = result;
+                        updateDisplay(result);
+                        isFirstNumberAfterCalculation = true;
+                        chosenOperator = "multiply";
+                    }
                     break;
                 case "power":
-                    previousNumber = currentDisplay.textContent;
-                    ifFirstOperationClearDisplay();
-                    chosenOperator = "power";
-                    break;
+                    if(isFirstCalculation) {
+                        previousNumber = currentDisplay.textContent;
+                        ifFirstOperationClearDisplay();
+                        chosenOperator = "power";
+                        isFirstCalculation  = false;
+                    }
+                    else {
+                        // updates display with result
+                        presentNumber = currentDisplay.textContent;
+                        let result = operate(chosenOperator, previousNumber, presentNumber);
+                        previousNumber = result;
+                        updateDisplay(result);
+                        isFirstNumberAfterCalculation = true;
+                        chosenOperator = "power";
+                    }
                 case "equals":
                     // prevents user from clicking "=" multiple times
                     if (chosenOperator === "") {
@@ -100,6 +148,7 @@ function newInput(e) {
                     // sets chosenOperator to "" and isFirstCalculation to true
                     resetIsFirstCalculation();
                     resetChosenOperator();
+                    displayingResult = true;
                     break;
                 case "signalChange":
                     if (!currentDisplayIsEmpty(currentDisplay)) {
@@ -135,14 +184,19 @@ function division (previousNumber, divider) {
 function operate(chosenOperator, previousNumber, presentNumber) {
     switch (chosenOperator) {
         case "add":
+            console.log(chosenOperator);
             return add(previousNumber, presentNumber);
         case "subtract":
+            console.log(chosenOperator);
             return subtract(previousNumber, presentNumber);
         case "multiply":
+            console.log(chosenOperator);
             return multiply(previousNumber, presentNumber);
         case "division":
+            console.log(chosenOperator);
             return division(previousNumber, presentNumber);
         case "power":
+            console.log(chosenOperator);
             return power(previousNumber, presentNumber);
         default:
             break;
@@ -192,6 +246,9 @@ function addDecimal(currentDisplay) {
 
 // POPULATE CURRENT DISPLAY WITH CLICKED BUTTON
 function populateDisplayWithButton(currentDisplay, pressedButton) {
+    if (displayingResult) {
+        return
+    }
     if(currentNumberIsZero(currentDisplay)) {
         updateDisplay(pressedButton.outerText);
         }
