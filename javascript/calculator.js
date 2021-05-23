@@ -9,6 +9,15 @@ const currentDisplay = document.querySelector("#currentDisplay");
 const MAX_DIGITS = 12;
 const historyArray = [];
 
+// Define variables
+var isFirstCalculation = true;
+var isFirstNumberAfterCalculation;
+var displayingResult;
+let numberInserted;
+let chosenOperator;
+let presentNumber;
+let previousNumber;
+
 // Reset Calculator
 clearEverything(historyDisplay, currentDisplay, historyArray);
 
@@ -28,12 +37,6 @@ function increaseOnClick (e) {
         clickedButton.classList.remove("increaseEffect")
     }
 }
-var isFirstCalculation = true;
-var isFirstNumberAfterCalculation;
-var displayingResult;
-let operationPreview;
-let chosenOperator;
-let previousNumber;
 
 // New User Input (Click or Keyboard)
 function newInput(e) {
@@ -42,113 +45,73 @@ function newInput(e) {
         // If it's a number
         if (buttonIsNumber(pressedButton)) {
             populateDisplayWithButton(currentDisplay, pressedButton);
+            numberInserted = true;
         }
         // If it's an Operation
         else {
+            // prevent operations without a number being inserted
+            if (!numberWasInserted()) {
+                return
+            }
             switch (pressedButton.id) {
                 case "back":
                     backspace(currentDisplay);
                     break;
                 case "clear":
-                    clearEverything(historyDisplay, currentDisplay, historyArray, operationPreview)
+                    clearEverything(historyDisplay, currentDisplay, historyArray)
                     break;
                 case "add":
                     if(isFirstCalculation) {
-                        previousNumber = currentDisplay.textContent;
-                        ifFirstOperationClearDisplay();
-                        chosenOperator = "add";
-                        isFirstCalculation  = false;
+                        prepareCalculation(pressedButton.id);
                     }
                     else {
-                        // updates display with result
-                        presentNumber = currentDisplay.textContent;
-                        let result = operate(chosenOperator, previousNumber, presentNumber);
-                        previousNumber = result;
-                        updateDisplay(result);
-                        isFirstNumberAfterCalculation = true;
-                        chosenOperator = "add";
+                        makeCalculation(pressedButton.id);
+
                     }
                     break;
                 case "subtract":
                     if(isFirstCalculation) {
-                        previousNumber = currentDisplay.textContent;
-                        ifFirstOperationClearDisplay();
-                        chosenOperator = "subtract";
-                        isFirstCalculation  = false;
+                        prepareCalculation(pressedButton.id);
                     }
                     else {
-                        // updates display with result
-                        presentNumber = currentDisplay.textContent;
-                        let result = operate(chosenOperator, previousNumber, presentNumber);
-                        previousNumber = result;
-                        updateDisplay(result);
-                        isFirstNumberAfterCalculation = true;
-                        chosenOperator = "subtract";
+                        makeCalculation(pressedButton.id);
                     }
                     break;
                 case "division":
                     if(isFirstCalculation) {
-                        previousNumber = currentDisplay.textContent;
-                        ifFirstOperationClearDisplay();
-                        chosenOperator = "division";
-                        isFirstCalculation  = false;
+                        prepareCalculation(pressedButton.id);
                     }
                     else {
-                        // updates display with result
-                        presentNumber = currentDisplay.textContent;
-                        let result = operate(chosenOperator, previousNumber, presentNumber);
-                        previousNumber = result;
-                        updateDisplay(result);
-                        isFirstNumberAfterCalculation = true;
-                        chosenOperator = "division";
+                        makeCalculation(pressedButton.id);
                     }
                     break;
                 case "multiply":
                     if(isFirstCalculation) {
-                        previousNumber = currentDisplay.textContent;
-                        ifFirstOperationClearDisplay();
-                        chosenOperator = "multiply";
-                        isFirstCalculation  = false;
+                        prepareCalculation(pressedButton.id);
                     }
                     else {
-                        // updates display with result
-                        presentNumber = currentDisplay.textContent;
-                        let result = operate(chosenOperator, previousNumber, presentNumber);
-                        previousNumber = result;
-                        updateDisplay(result);
-                        isFirstNumberAfterCalculation = true;
-                        chosenOperator = "multiply";
+                        makeCalculation(pressedButton.id);
                     }
                     break;
                 case "power":
                     if(isFirstCalculation) {
-                        previousNumber = currentDisplay.textContent;
-                        ifFirstOperationClearDisplay();
-                        chosenOperator = "power";
-                        isFirstCalculation  = false;
+                        prepareCalculation(pressedButton.id);
                     }
                     else {
-                        // updates display with result
-                        presentNumber = currentDisplay.textContent;
-                        let result = operate(chosenOperator, previousNumber, presentNumber);
-                        previousNumber = result;
-                        updateDisplay(result);
-                        isFirstNumberAfterCalculation = true;
-                        chosenOperator = "power";
+                        makeCalculation(pressedButton.id);
                     }
                 case "equals":
-                    // prevents user from clicking "=" multiple times
-                    if (chosenOperator === "") {
+                    // prevents user from clicking "=" multiple times or before inserting a number
+                    if (chosenOperator === "" || !previousNumber) {
                         return;
                     }
-                    // updates display with result
-                    presentNumber = currentDisplay.textContent;
-                    let result = operate(chosenOperator, previousNumber, presentNumber);
-                    updateDisplay(result);
+                    updateDisplayWithFinalResult();
                     // sets chosenOperator to "" and isFirstCalculation to true
                     resetIsFirstCalculation();
                     resetChosenOperator();
+                    // allow user to insert new numbers after 'EQUALS'.
                     displayingResult = true;
+                    isFirstNumberAfterCalculation = true
                     break;
                 case "signalChange":
                     if (!currentDisplayIsEmpty(currentDisplay)) {
@@ -158,56 +121,76 @@ function newInput(e) {
                 case "decimal":
                     addDecimal(currentDisplay);
                         break;    
-                    default:
+                default:
                     break;
             }
-
             }
         }
     }
 
 
-
-// FUNCTIONS FOR CALCULATIONS AND DIPLAYING RESULTS
-let updateDisplay = (displayValue) => currentDisplay.textContent = `${displayValue}`;
-let add = (previousNumber, numberToAdd) => parseFloat(previousNumber) + parseFloat(numberToAdd);
-let subtract = (previousNumber, numberToSubtract) =>  parseFloat(previousNumber) - parseFloat(numberToSubtract);
-let multiply = (previousNumber, multiplier) =>  parseFloat(previousNumber) * parseFloat(multiplier);
-let power = (previousNumber, power) => Math.pow(previousNumber,power);
+// FUNCTIONS FOR BASIC OPERATIONS
+let add = (previousNumber, numberToAdd) => roundToSixDecimals(parseFloat(previousNumber) + parseFloat(numberToAdd));
+let subtract = (previousNumber, numberToSubtract) => roundToSixDecimals(parseFloat(previousNumber) - parseFloat(numberToSubtract));
+let multiply = (previousNumber, multiplier) =>  roundToSixDecimals(parseFloat(previousNumber) * parseFloat(multiplier));
+let power = (previousNumber, power) => roundToSixDecimals(Math.pow(previousNumber, power));
 function division (previousNumber, divider) {
-    if (divider != 0) {
-        return parseFloat(previousNumber) / parseFloat(divider);
-    }
+        return roundToSixDecimals(parseFloat(previousNumber) / parseFloat(divider));
 }
 
-// OPERATOR FUNCTION - MAKES ALL THE OPERATIONS WITH NUMBERS
+function roundToSixDecimals(number) {
+    return Math.round(number * 1000000) / 1000000
+}
+
+// OPERATOR FUNCTION - MAKES ALL THE OPERATIONS WITH NUMBERS BASED ON CHOSEN OPERATOR
 function operate(chosenOperator, previousNumber, presentNumber) {
     switch (chosenOperator) {
         case "add":
-            console.log(chosenOperator);
             return add(previousNumber, presentNumber);
         case "subtract":
-            console.log(chosenOperator);
             return subtract(previousNumber, presentNumber);
         case "multiply":
-            console.log(chosenOperator);
             return multiply(previousNumber, presentNumber);
         case "division":
-            console.log(chosenOperator);
             return division(previousNumber, presentNumber);
         case "power":
-            console.log(chosenOperator);
             return power(previousNumber, presentNumber);
         default:
             break;
     }
 }
+// PREPARE AND MAKE CALCULATIONS FUNCTIONS
+function prepareCalculation(pressedButtonId) {
+    displayingResult = false;
+    previousNumber = currentDisplay.textContent;
+    ifFirstOperationClearDisplay();
+    chosenOperator = pressedButtonId;
+    isFirstCalculation  = false;
+}
+function makeCalculation(pressedButtonId) {
+    presentNumber = currentDisplay.textContent;
+    let result = operate(chosenOperator, previousNumber, presentNumber);
+    previousNumber = result;
+    updateDisplay(result);
+    isFirstNumberAfterCalculation = true;
+    chosenOperator = pressedButtonId;
+}
+
+let updateDisplay = (displayValue) => currentDisplay.textContent = `${displayValue}`;
+
+function updateDisplayWithFinalResult() {
+    presentNumber = currentDisplay.textContent;
+    let result = operate(chosenOperator, previousNumber, presentNumber);
+    updateDisplay(result);
+}
 
 // FUNCTIONS FOR CLEARING DISPLAY AND CALCULATOR
 let clearCurrentDisplay = () => currentDisplay.textContent = "";
 
-function clearEverything(history, currentDisplay, historyArray, operationPreview) {
+function clearEverything(history, currentDisplay, historyArray) {
+    displayingResult = false;
     isFirstCalculation = true;
+    numberInserted = ""
     history.textContent = "";
     currentDisplay.textContent = "";
     historyArray.splice(0, historyArray.length);
@@ -230,8 +213,8 @@ function backspace(currentDisplay) {
 
 // CHANGE SIGN AND ADD DECIMALS
 function signalChange(currentDisplay) {
-    let presentNumber = currentDisplay.textContent;
-    let inverseNumber = presentNumber * (-1);
+    presentNumber = currentDisplay.textContent;
+    let inverseNumber = parseFloat(presentNumber) * (-1);
     currentDisplay.textContent = inverseNumber;
 }
 
@@ -246,12 +229,19 @@ function addDecimal(currentDisplay) {
 
 // POPULATE CURRENT DISPLAY WITH CLICKED BUTTON
 function populateDisplayWithButton(currentDisplay, pressedButton) {
-    if (displayingResult) {
-        return
-    }
     if(currentNumberIsZero(currentDisplay)) {
         updateDisplay(pressedButton.outerText);
         }
+    if(displayingResult) {
+        console.log(isFirstNumberAfterCalculation);
+        if(isFirstNumberAfterCalculation) {
+            updateDisplay(pressedButton.outerText);
+            isFirstNumberAfterCalculation = false;
+        }
+        else {
+            currentDisplay.textContent += pressedButton.outerText;
+        }
+    }
     else if(!currentNumberIsZero(currentDisplay) && !isFirstCalculation && isFirstNumberAfterCalculation === true) {
         updateDisplay(pressedButton.outerText);
         isFirstNumberAfterCalculation = false;
@@ -261,37 +251,34 @@ function populateDisplayWithButton(currentDisplay, pressedButton) {
         }
 }
 
-// TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
-// // POPULATE "HISTORY BAR" WITH PREVIOUS HISTORY
-// function updateHistory(pressedbuttonId, historyArray, previousNumber){
-
-//     historyArray.push(previousNumber); 
-    
-//     switch (pressedbuttonId) {
-//         case "add":
-//             historyArray.push("+");
-//             historyDisplay.textContent = historyArray.join(" ");
-//             break;
-//         case "subtract":
-//             historyArray.push("-");
-//             historyDisplay.textContent = historyArray.join(" ");
-//             break;
-//         case "division":
-//             historyArray.push("/");
-//             historyDisplay.textContent = historyArray.join(" ");
-//             break;
-//         case "multiply":
-//             historyArray.push("*");
-//             historyDisplay.textContent = historyArray.join(" ");
-//             break;
-//         case "power":
-//             historyArray.push("^");
-//             historyDisplay.textContent = historyArray.join(" ");
-//             break;
-//         default:
-//             break;
-//     }   
-// }
+ // POPULATE "HISTORY BAR" WITH PREVIOUS HISTORY
+//  function updateHistory(pressedbuttonId, historyArray, previousNumber)
+//         historyArray.push(previousNumber);   
+//      switch (pressedbuttonId) {
+//          case "add":
+//              historyArray.push("+");
+//              historyDisplay.textContent = historyArray.join(" ");
+//              break;
+//          case "subtract":
+//              historyArray.push("-");
+//              historyDisplay.textContent = historyArray.join(" ");
+//              break;
+//          case "division":
+//              historyArray.push("/");
+//              historyDisplay.textContent = historyArray.join(" ");
+//              break;
+//          case "multiply":
+//              historyArray.push("*");
+//              historyDisplay.textContent = historyArray.join(" ");
+//              break;
+//          case "power":
+//              historyArray.push("^");
+//              historyDisplay.textContent = historyArray.join(" ");
+//              break;
+//          default:
+//              break;
+//      }   
+//  }
 
 
 // BOOLEAN VALIDATIONS
@@ -299,6 +286,7 @@ let ifFirstOperationClearDisplay = () => isFirstCalculation ? clearCurrentDispla
 let buttonIsNumber = (pressedButton) => (pressedButton.classList.contains("number")) ? true : false;
 let currentNumberIsZero = (currentDisplay) => (currentDisplay.textContent === "0") ? true : false;
 let currentDisplayIsEmpty = (currentDisplay) => (currentDisplay.textContent === "") ? true : false;
+let numberWasInserted = () => numberInserted ? true : false;
 function alreadyContainsDecimal(currentDisplay) {
     let presentNumber = currentDisplay.textContent;
     for (let digit of presentNumber) {
