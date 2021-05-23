@@ -24,11 +24,11 @@ output {
     min-height: 25px;
 }
 
-#history {
+#historyDisplay {
     font-size: 110%;
 }
 
-#current {
+#currentDisplay {
     font-size: 150%;
 }
 
@@ -82,8 +82,8 @@ button:hover {
     border-radius: 1%;
     display: grid;
     grid-template-areas: 
-    "history history history history"
-    "current current current current"
+    "historyDisplay historyDisplay historyDisplay historyDisplay"
+    "currentDisplay currentDisplay currentDisplay currentDisplay"
     "clear back power division"
     "seven eight nine multiply"
     "four five six subtract"
@@ -99,12 +99,12 @@ button:hover {
     min-height: 350px;
 }
 
-#history {
-    grid-area: history;
+#historyDisplay {
+    grid-area: historyDisplay;
 }
 
-#current {
-    grid-area: current;
+#currentDisplay {
+    grid-area: currentDisplay;
 }
 
 #zero {
