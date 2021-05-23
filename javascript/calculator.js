@@ -29,6 +29,7 @@ function increaseOnClick (e) {
     }
 }
 var isFirstCalculation = true;
+var isFirstNumberAfterCalculation;
 let operationPreview;
 let chosenOperator;
 let previousNumber;
@@ -51,28 +52,40 @@ function newInput(e) {
                     clearEverything(historyDisplay, currentDisplay, historyArray, operationPreview)
                     break;
                 case "add":
-                    previousNumber = currentDisplay.textContent;
-                    checkIfFirstOperation();
-                    chosenOperator = "add";
+                    if(isFirstCalculation) {
+                        previousNumber = currentDisplay.textContent;
+                        ifFirstOperationClearDisplay();
+                        chosenOperator = "add";
+                        isFirstCalculation  = false;
+                    }
+                    else {
+                        // updates display with result
+                        presentNumber = currentDisplay.textContent;
+                        let result = operate(chosenOperator, previousNumber, presentNumber);
+                        console.log(result);
+                        previousNumber = result;
+                        updateDisplay(result);
+                        isFirstNumberAfterCalculation = true;
+                    }
                     break;
                 case "subtract":
                     previousNumber = currentDisplay.textContent;
-                    checkIfFirstOperation();
+                    ifFirstOperationClearDisplay();
                     chosenOperator = "subtract";
                     break;
                 case "division":
                     previousNumber = currentDisplay.textContent;
-                    checkIfFirstOperation();
+                    ifFirstOperationClearDisplay();
                     chosenOperator = "division";
                     break;
                 case "multiply":
                     previousNumber = currentDisplay.textContent;
-                    checkIfFirstOperation();
+                    ifFirstOperationClearDisplay();
                     chosenOperator = "multiply";
                     break;
                 case "power":
                     previousNumber = currentDisplay.textContent;
-                    checkIfFirstOperation();
+                    ifFirstOperationClearDisplay();
                     chosenOperator = "power";
                     break;
                 case "equals":
@@ -83,10 +96,10 @@ function newInput(e) {
                     // updates display with result
                     presentNumber = currentDisplay.textContent;
                     let result = operate(chosenOperator, previousNumber, presentNumber);
-                    displayResult(result);
+                    updateDisplay(result);
                     // sets chosenOperator to "" and isFirstCalculation to true
                     resetIsFirstCalculation();
-                    resetChooseOperator();
+                    resetChosenOperator();
                     break;
                 case "signalChange":
                     if (!currentDisplayIsEmpty(currentDisplay)) {
@@ -107,7 +120,7 @@ function newInput(e) {
 
 
 // FUNCTIONS FOR CALCULATIONS AND DIPLAYING RESULTS
-let displayResult = (currentResult) => currentDisplay.textContent = `${currentResult}`;
+let updateDisplay = (displayValue) => currentDisplay.textContent = `${displayValue}`;
 let add = (previousNumber, numberToAdd) => parseFloat(previousNumber) + parseFloat(numberToAdd);
 let subtract = (previousNumber, numberToSubtract) =>  parseFloat(previousNumber) - parseFloat(numberToSubtract);
 let multiply = (previousNumber, multiplier) =>  parseFloat(previousNumber) * parseFloat(multiplier);
@@ -180,20 +193,15 @@ function addDecimal(currentDisplay) {
 // POPULATE CURRENT DISPLAY WITH CLICKED BUTTON
 function populateDisplayWithButton(currentDisplay, pressedButton) {
     if(currentNumberIsZero(currentDisplay)) {
-        displayResult(pressedButton.outerText);
+        updateDisplay(pressedButton.outerText);
         }
-    else if(!currentNumberIsZero(currentDisplay) && !isFirstCalculation) {
-        if(operationPreview) {
-            currentDisplay.textContent = pressedButton.outerText;
-            operationPreview = false;
-            }
-        else {
-            currentDisplay.textContent += pressedButton.outerText;
-        }
+    else if(!currentNumberIsZero(currentDisplay) && !isFirstCalculation && isFirstNumberAfterCalculation === true) {
+        updateDisplay(pressedButton.outerText);
+        isFirstNumberAfterCalculation = false;
     }
     else {
         currentDisplay.textContent += pressedButton.outerText;
-    }
+        }
 }
 
 // TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
@@ -230,7 +238,7 @@ function populateDisplayWithButton(currentDisplay, pressedButton) {
 
 
 // BOOLEAN VALIDATIONS
-let checkIfFirstOperation = () => isFirstCalculation ? clearCurrentDisplay() : 1;
+let ifFirstOperationClearDisplay = () => isFirstCalculation ? clearCurrentDisplay() : 1;
 let buttonIsNumber = (pressedButton) => (pressedButton.classList.contains("number")) ? true : false;
 let currentNumberIsZero = (currentDisplay) => (currentDisplay.textContent === "0") ? true : false;
 let currentDisplayIsEmpty = (currentDisplay) => (currentDisplay.textContent === "") ? true : false;
@@ -254,8 +262,7 @@ function maxDigitRuleRespected(currentDisplay) {
 
 // RUNS AFTER PRESSING "EQUALS" 
 let resetIsFirstCalculation = () => isFirstCalculation = true;
-let resetChooseOperator = () =>  chosenOperator = "";
-
+let resetChosenOperator = () =>  chosenOperator = "";
 
 // // Keyboard Support
 // document.addEventListener("keyup", keyboardSupport);
