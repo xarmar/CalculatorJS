@@ -26,6 +26,7 @@ buttons.forEach(button => {
     button.addEventListener("click", newInput)
     button.addEventListener("click", increaseOnClick);
     button.setAttribute("tabindex", "-1");
+    button.addEventListener('focus', preventFocus);
 });
 
 function increaseOnClick (e) {
@@ -38,6 +39,17 @@ function increaseOnClick (e) {
         clickedButton.classList.remove("increaseEffect")
     }
 }
+
+function preventFocus(event) {
+    event.preventDefault();
+    if (event.relatedTarget) {
+      // Revert focus back to previous blurring element
+      event.relatedTarget.focus();
+    } else {
+      // No previous focus target, blur instead
+      event.currentTarget.blur();
+    }
+  }
 
 // New User Input (Click or Keyboard)
 function newInput(e) {
@@ -334,28 +346,36 @@ document.addEventListener("keyup", keyboardSupport);
             clearEverything(history, currentDisplay, historyArray);
             break;
         case 48:
+            numberInserted = true;
             populateDisplayWithKeyDown(currentDisplay, 0);
             break;
         case 49:
+            numberInserted = true;
             populateDisplayWithKeyDown(currentDisplay, 1);
             break;
         case 50:
+            numberInserted = true;
             populateDisplayWithKeyDown(currentDisplay, 2);
             break;
         case 51:
+            numberInserted = true;
             populateDisplayWithKeyDown(currentDisplay, 3);
             break;
         case 52:
+            numberInserted = true;
             populateDisplayWithKeyDown(currentDisplay, 4);
             break;
         case 53:
+            numberInserted = true;
             populateDisplayWithKeyDown(currentDisplay, 5);
             break;
         case 54:
+            numberInserted = true;
             populateDisplayWithKeyDown(currentDisplay, 6);
             break;
         case 55:
             if(!e.shiftKey) {
+                numberInserted = true;
                 populateDisplayWithKeyDown(currentDisplay, 7);
             }
             else {
@@ -367,9 +387,11 @@ document.addEventListener("keyup", keyboardSupport);
                 }            }
             break;
         case 56:
+            numberInserted = true;
             populateDisplayWithKeyDown(currentDisplay, 8);
             break;
         case 57:
+            numberInserted = true;
             populateDisplayWithKeyDown(currentDisplay, 9);
             break;
         case 83:
