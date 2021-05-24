@@ -127,6 +127,7 @@ function newInput(e) {
                     else {
                         makeCalculation(pressedButton.id), undefined;
                     }
+                    break;
                 case "equals":
                     // prevents user from clicking "=" multiple times or before inserting a number
                     if (chosenOperator === "" || !previousNumber) {
@@ -154,7 +155,6 @@ function newInput(e) {
             }
         }
     }
-
 
 // FUNCTIONS FOR BASIC OPERATIONS
 let add = (previousNumber, numberToAdd) => roundToSixDecimals(parseFloat(previousNumber) + parseFloat(numberToAdd));
@@ -440,6 +440,15 @@ document.addEventListener("keyup", keyboardSupport);
             {
                 addDecimal(currentDisplay);
                 break;
+            }
+        case 220:
+            if(e.shiftKey) {
+                if(isFirstCalculation) {
+                    prepareCalculation(undefined, "power");
+                }
+                else {
+                    makeCalculation(undefined, "power");
+                }
             }
         default:
             break;
