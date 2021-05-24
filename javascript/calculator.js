@@ -25,6 +25,7 @@ clearEverything(historyDisplay, currentDisplay, historyArray);
 buttons.forEach(button => {
     button.addEventListener("click", newInput)
     button.addEventListener("click", increaseOnClick);
+    button.setAttribute("tabindex", "-1");
 });
 
 function increaseOnClick (e) {
@@ -62,43 +63,43 @@ function newInput(e) {
                     break;
                 case "add":
                     if(isFirstCalculation) {
-                        prepareCalculation(pressedButton.id);
+                        prepareCalculation(pressedButton.id, undefined);
                     }
                     else {
-                        makeCalculation(pressedButton.id);
+                        makeCalculation(pressedButton.id), undefined;
 
                     }
                     break;
                 case "subtract":
                     if(isFirstCalculation) {
-                        prepareCalculation(pressedButton.id);
+                        prepareCalculation(pressedButton.id, undefined);
                     }
                     else {
-                        makeCalculation(pressedButton.id);
+                        makeCalculation(pressedButton.id, undefined);
                     }
                     break;
                 case "division":
                     if(isFirstCalculation) {
-                        prepareCalculation(pressedButton.id);
+                        prepareCalculation(pressedButton.id, undefined);
                     }
                     else {
-                        makeCalculation(pressedButton.id);
+                        makeCalculation(pressedButton.id, undefined);
                     }
                     break;
                 case "multiply":
                     if(isFirstCalculation) {
-                        prepareCalculation(pressedButton.id);
+                        prepareCalculation(pressedButton.id, undefined);
                     }
                     else {
-                        makeCalculation(pressedButton.id);
+                        makeCalculation(pressedButton.id, undefined);
                     }
                     break;
                 case "power":
                     if(isFirstCalculation) {
-                        prepareCalculation(pressedButton.id);
+                        prepareCalculation(pressedButton.id, undefined);
                     }
                     else {
-                        makeCalculation(pressedButton.id);
+                        makeCalculation(pressedButton.id), undefined;
                     }
                 case "equals":
                     // prevents user from clicking "=" multiple times or before inserting a number
@@ -160,20 +161,30 @@ function operate(chosenOperator, previousNumber, presentNumber) {
     }
 }
 // PREPARE AND MAKE CALCULATIONS FUNCTIONS
-function prepareCalculation(pressedButtonId) {
+function prepareCalculation(pressedButtonId, keyboardChoice) {
     displayingResult = false;
     previousNumber = currentDisplay.textContent;
     ifFirstOperationClearDisplay();
+    if(!keyboardChoice) {
     chosenOperator = pressedButtonId;
+    }
+    if(!pressedButtonId) {
+        chosenOperator = keyboardChoice;
+    }
     isFirstCalculation  = false;
 }
-function makeCalculation(pressedButtonId) {
+function makeCalculation(pressedButtonId, keyboardChoice) {
     presentNumber = currentDisplay.textContent;
     let result = operate(chosenOperator, previousNumber, presentNumber);
     previousNumber = result;
     updateDisplay(result);
     isFirstNumberAfterCalculation = true;
+    if(!keyboardChoice) {
     chosenOperator = pressedButtonId;
+    }
+    if(!pressedButtonId) {
+        chosenOperator = keyboardChoice;
+    }
 }
 
 let updateDisplay = (displayValue) => currentDisplay.textContent = `${displayValue}`;
@@ -233,8 +244,7 @@ function populateDisplayWithButton(currentDisplay, pressedButton) {
         updateDisplay(pressedButton.outerText);
         }
     if(displayingResult) {
-        console.log(isFirstNumberAfterCalculation);
-        if(isFirstNumberAfterCalculation) {
+        if(isFirstNumberAfterCalculation && currentDisplay.textContent.slice(-1) !== ".") {
             updateDisplay(pressedButton.outerText);
             isFirstNumberAfterCalculation = false;
         }
@@ -251,35 +261,27 @@ function populateDisplayWithButton(currentDisplay, pressedButton) {
         }
 }
 
- // POPULATE "HISTORY BAR" WITH PREVIOUS HISTORY
-//  function updateHistory(pressedbuttonId, historyArray, previousNumber)
-//         historyArray.push(previousNumber);   
-//      switch (pressedbuttonId) {
-//          case "add":
-//              historyArray.push("+");
-//              historyDisplay.textContent = historyArray.join(" ");
-//              break;
-//          case "subtract":
-//              historyArray.push("-");
-//              historyDisplay.textContent = historyArray.join(" ");
-//              break;
-//          case "division":
-//              historyArray.push("/");
-//              historyDisplay.textContent = historyArray.join(" ");
-//              break;
-//          case "multiply":
-//              historyArray.push("*");
-//              historyDisplay.textContent = historyArray.join(" ");
-//              break;
-//          case "power":
-//              historyArray.push("^");
-//              historyDisplay.textContent = historyArray.join(" ");
-//              break;
-//          default:
-//              break;
-//      }   
-//  }
-
+function populateDisplayWithKeyDown(currentDisplay, number) {
+    if(currentNumberIsZero(currentDisplay)) {
+        updateDisplay(number);
+        }
+    if(displayingResult) {
+        if(isFirstNumberAfterCalculation && currentDisplay.textContent.slice(-1) !== ".") {
+            updateDisplay(number);
+            isFirstNumberAfterCalculation = false;
+        }
+        else {
+            currentDisplay.textContent += number;
+        }
+    }
+    else if(!currentNumberIsZero(currentDisplay) && !isFirstCalculation && isFirstNumberAfterCalculation === true) {
+        updateDisplay(number);
+        isFirstNumberAfterCalculation = false;
+    }
+    else {
+        currentDisplay.textContent += number;
+        }
+}
 
 // BOOLEAN VALIDATIONS
 let ifFirstOperationClearDisplay = () => isFirstCalculation ? clearCurrentDisplay() : 1;
@@ -310,43 +312,142 @@ let resetIsFirstCalculation = () => isFirstCalculation = true;
 let resetChosenOperator = () =>  chosenOperator = "";
 
 // // Keyboard Support
-// document.addEventListener("keyup", keyboardSupport);
+document.addEventListener("keyup", keyboardSupport);
 
-// function keyboardSupport(e) {
-//     switch (e.keyCode) {
-//         case 48:
-//             populateDisplayWithKeyDown(currentDisplay, 0);
+ function keyboardSupport(e) {
+     console.log(e);
+     switch (e.keyCode) {
+        case 8:
+            backspace(currentDisplay);
+            break;
+        case 13: // equals
+            if (chosenOperator === "" || !previousNumber) {
+                return;
+            }
+            updateDisplayWithFinalResult();
+            resetIsFirstCalculation();
+            resetChosenOperator();
+            displayingResult = true;
+            isFirstNumberAfterCalculation = true
+            break;
+        case 46:
+            clearEverything(history, currentDisplay, historyArray);
+            break;
+        case 48:
+            populateDisplayWithKeyDown(currentDisplay, 0);
+            break;
+        case 49:
+            populateDisplayWithKeyDown(currentDisplay, 1);
+            break;
+        case 50:
+            populateDisplayWithKeyDown(currentDisplay, 2);
+            break;
+        case 51:
+            populateDisplayWithKeyDown(currentDisplay, 3);
+            break;
+        case 52:
+            populateDisplayWithKeyDown(currentDisplay, 4);
+            break;
+        case 53:
+            populateDisplayWithKeyDown(currentDisplay, 5);
+            break;
+        case 54:
+            populateDisplayWithKeyDown(currentDisplay, 6);
+            break;
+        case 55:
+            if(!e.shiftKey) {
+                populateDisplayWithKeyDown(currentDisplay, 7);
+            }
+            else {
+                if(isFirstCalculation) {
+                    prepareCalculation(undefined, "division");
+                }
+                else {
+                    makeCalculation(undefined, "division");
+                }            }
+            break;
+        case 56:
+            populateDisplayWithKeyDown(currentDisplay, 8);
+            break;
+        case 57:
+            populateDisplayWithKeyDown(currentDisplay, 9);
+            break;
+        case 83:
+            signalChange(currentDisplay);
+            break;
+        case 187:
+            if(!e.shiftKey) {
+                if(isFirstCalculation) {
+                    prepareCalculation(undefined, "add");
+                }
+                else {
+                    makeCalculation(undefined, "add");
+                }
+            }
+            else {
+                if(isFirstCalculation) {
+                    prepareCalculation(undefined, "multiply");
+                }
+                else {
+                    makeCalculation(undefined, "multiply");
+                }
+            }
+            break;
+        case 189:
+            if(isFirstCalculation) {
+                prepareCalculation(undefined, "subtract");
+            }
+            else {
+                makeCalculation(undefined, "subtract");
+            }
+            break;
+        case 190:
+            {
+                addDecimal(currentDisplay);
+                break;
+            }
+        default:
+            break;
+    }
+}
+
+
+// // POPULATE "HISTORY BAR" WITH PREVIOUS HISTORY
+// function updateHistory(chosenOperator, previousNumber, presentNumber) {
+//     switch (chosenOperator) {
+//         case "add":
+//             if(isFirstCalculation) {
+//             }
+//             else {
+//             }
 //             break;
-//         case 49:
-//             populateDisplayWithKeyDown(currentDisplay, 1);
+//         case "subtract":
+//             if(isFirstCalculation) {
+//             }
+//             else {
+//             }            
 //             break;
-//         case 50:
-//             populateDisplayWithKeyDown(currentDisplay, 2);
+//         case "division":
+//             if(isFirstCalculation) {
+//             }
+//             else {
+//             }
 //             break;
-//         case 51:
-//             populateDisplayWithKeyDown(currentDisplay, 3);
+//         case "multiply":
+//             if(isFirstCalculation) {
+//             }
+//             else {
+//             }
 //             break;
-//         case 52:
-//             populateDisplayWithKeyDown(currentDisplay, 4);
-//             break;
-//         case 53:
-//             populateDisplayWithKeyDown(currentDisplay, 5);
-//             break;
-//         case 54:
-//             populateDisplayWithKeyDown(currentDisplay, 6);
-//             break;
-//         case 55:
-//             populateDisplayWithKeyDown(currentDisplay, 7);
-//             break;
-//         case 56:
-//             populateDisplayWithKeyDown(currentDisplay, 8);
-//             break;
-//         case 57:
-//             populateDisplayWithKeyDown(currentDisplay, 9);
+//         case "power":
+//             if(isFirstCalculation) {
+//             }
+//             else {
+//             }
 //             break;
 //         default:
 //             break;
-//     }
+//     }   
 // }
 
 
