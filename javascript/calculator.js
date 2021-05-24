@@ -74,15 +74,20 @@ function newInput(e) {
                     clearEverything(historyDisplay, currentDisplay, historyArray)
                     break;
                 case "add":
+                    if(currentDisplayIsEmpty(currentDisplay)) {
+                        break;
+                    }
                     if(isFirstCalculation) {
                         prepareCalculation(pressedButton.id, undefined);
                     }
                     else {
                         makeCalculation(pressedButton.id), undefined;
-
                     }
                     break;
                 case "subtract":
+                    if(currentDisplayIsEmpty(currentDisplay)) {
+                        break;
+                    }
                     if(isFirstCalculation) {
                         prepareCalculation(pressedButton.id, undefined);
                     }
@@ -91,6 +96,9 @@ function newInput(e) {
                     }
                     break;
                 case "division":
+                    if(currentDisplayIsEmpty(currentDisplay)) {
+                        break;
+                    }
                     if(isFirstCalculation) {
                         prepareCalculation(pressedButton.id, undefined);
                     }
@@ -99,6 +107,9 @@ function newInput(e) {
                     }
                     break;
                 case "multiply":
+                    if(currentDisplayIsEmpty(currentDisplay)) {
+                        break;
+                    }
                     if(isFirstCalculation) {
                         prepareCalculation(pressedButton.id, undefined);
                     }
@@ -107,6 +118,9 @@ function newInput(e) {
                     }
                     break;
                 case "power":
+                    if(currentDisplayIsEmpty(currentDisplay)) {
+                        break;
+                    }
                     if(isFirstCalculation) {
                         prepareCalculation(pressedButton.id, undefined);
                     }
@@ -327,7 +341,6 @@ let resetChosenOperator = () =>  chosenOperator = "";
 document.addEventListener("keyup", keyboardSupport);
 
  function keyboardSupport(e) {
-     console.log(e);
      switch (e.keyCode) {
         case 8:
             backspace(currentDisplay);
@@ -432,6 +445,7 @@ document.addEventListener("keyup", keyboardSupport);
             break;
     }
 }
+
 
 
 // // POPULATE "HISTORY BAR" WITH PREVIOUS HISTORY
