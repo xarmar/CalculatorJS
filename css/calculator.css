@@ -75,6 +75,21 @@ button:hover {
     }
 }
 
+/* EFFECT WHEN CALCULATOR IS DISPLAYING RESULT */
+.clearButtonHighlight {
+    animation-name: highlightCE;
+    animation-iteration-count: infinite;
+    animation-duration: 6s;
+}
+
+@keyframes highlightCE {
+
+    50% {
+        background-color: coral;
+    }
+
+}
+
 /* CALCULATOR DISPLAY ORDER */
 
 #calculator {
