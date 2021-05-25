@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
 const buttons = document.querySelectorAll("button");
 const historyDisplay = document.querySelector("#historyDisplay");
 const currentDisplay = document.querySelector("#currentDisplay");
+const clear = document.querySelector("#clear");
 
 // Define Consts
 const MAX_DIGITS = 12;
@@ -65,15 +66,19 @@ function newInput(e) {
         // If it's an Operation
         else {
             // prevent operations without a number being inserted
-            if (!numberWasInserted() || displayingResult) {
+            if (!numberWasInserted()) {
                 return
             }
             switch (pressedButton.id) {
                 case "back":
+                    if(displayingResult)
+                    {
+                        break;
+                    }
                     backspace(currentDisplay);
                     break;
                 case "clear":
-                    clearEverything(historyDisplay, currentDisplay, historyArray)
+                    clearEverything(historyDisplay, currentDisplay, historyArray);
                     break;
                 case "add":
                     if(currentDisplayIsEmpty(currentDisplay) || displayingResult) {
@@ -141,15 +146,24 @@ function newInput(e) {
                     resetChosenOperator();
                     // allow user to insert new numbers after 'EQUALS'.
                     displayingResult = true;
+                    ToggleHighlightClearButton(displayingResult);
                     displayHistory(historyArray, undefined, undefined, presentNumber);
                     isFirstNumberAfterCalculation = true
                     break;
                 case "signalChange":
+                    if(displayingResult)
+                    {
+                        break;
+                    }
                     if (!currentDisplayIsEmpty(currentDisplay)) {
                         signalChange(currentDisplay);  
                     }           
                        break;
                 case "decimal":
+                    if(displayingResult)
+                    {
+                        break;
+                    }
                     addDecimal(currentDisplay);
                         break;    
                 default:
@@ -231,6 +245,7 @@ let clearCurrentDisplay = () => currentDisplay.textContent = "";
 
 function clearEverything(history, currentDisplay, historyArray) {
     displayingResult = false;
+    ToggleHighlightClearButton(displayingResult);
     isFirstCalculation = true;
     numberInserted = ""
     history.textContent = "";
@@ -342,6 +357,14 @@ function maxDigitRuleRespected(currentDisplay) {
 // RUNS AFTER PRESSING "EQUALS" 
 let resetIsFirstCalculation = () => isFirstCalculation = true;
 let resetChosenOperator = () =>  chosenOperator = "";
+function ToggleHighlightClearButton(displayingResult) {
+    if(displayingResult) {
+        clear.classList.add("clearButtonHighlight");
+    }
+    else {
+        clear.classList.remove("clearButtonHighlight");
+    }
+}
 
 // // Keyboard Support
 document.addEventListener("keyup", keyboardSupport);
@@ -362,6 +385,7 @@ document.addEventListener("keyup", keyboardSupport);
             resetIsFirstCalculation();
             resetChosenOperator();
             displayingResult = true;
+            ToggleHighlightClearButton(displayingResult);
             displayHistory(historyArray, undefined, undefined, presentNumber);
             isFirstNumberAfterCalculation = true
             break;
@@ -418,10 +442,10 @@ document.addEventListener("keyup", keyboardSupport);
             populateDisplayWithKeyDown(currentDisplay, 6);
             break;
         case 55:
+            if (displayingResult) {
+                break
+            }
             if(!e.shiftKey) {
-                if(displayingResult) {
-                    break;    
-                }
                 numberInserted = true;
                 populateDisplayWithKeyDown(currentDisplay, 7);
             }
