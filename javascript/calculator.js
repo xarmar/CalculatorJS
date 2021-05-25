@@ -58,14 +58,14 @@ function newInput(e) {
     let pressedButton = e.target;
     if (maxDigitRuleRespected(currentDisplay) || !pressedButton.classList.contains("number")) {
         // If it's a number
-        if (buttonIsNumber(pressedButton)) {
+        if (buttonIsNumber(pressedButton) && !displayingResult) {
             populateDisplayWithButton(currentDisplay, pressedButton);
             numberInserted = true;
         }
         // If it's an Operation
         else {
             // prevent operations without a number being inserted
-            if (!numberWasInserted()) {
+            if (!numberWasInserted() || displayingResult) {
                 return
             }
             switch (pressedButton.id) {
@@ -349,6 +349,9 @@ document.addEventListener("keyup", keyboardSupport);
  function keyboardSupport(e) {
      switch (e.keyCode) {
         case 8:
+            if(displayingResult) {
+                break;
+            }
             backspace(currentDisplay);
             break;
         case 13: // equals
@@ -366,30 +369,51 @@ document.addEventListener("keyup", keyboardSupport);
             clearEverything(history, currentDisplay, historyArray);
             break;
         case 48:
+            if(displayingResult) {
+                break;
+            }
             numberInserted = true;
             populateDisplayWithKeyDown(currentDisplay, 0);
             break;
         case 49:
+            if(displayingResult) {
+                break;
+            }
             numberInserted = true;
             populateDisplayWithKeyDown(currentDisplay, 1);
             break;
         case 50:
+            if(displayingResult) {
+                break;
+            }
             numberInserted = true;
             populateDisplayWithKeyDown(currentDisplay, 2);
             break;
         case 51:
+            if(displayingResult) {
+                break;
+            }
             numberInserted = true;
             populateDisplayWithKeyDown(currentDisplay, 3);
             break;
         case 52:
+            if(displayingResult) {
+                break;
+            }
             numberInserted = true;
             populateDisplayWithKeyDown(currentDisplay, 4);
             break;
         case 53:
+            if(displayingResult) {
+                break;
+            }
             numberInserted = true;
             populateDisplayWithKeyDown(currentDisplay, 5);
             break;
         case 54:
+            if(displayingResult) {
+                break;
+            }
             numberInserted = true;
             populateDisplayWithKeyDown(currentDisplay, 6);
             break;
@@ -410,14 +434,23 @@ document.addEventListener("keyup", keyboardSupport);
                 }            }
             break;
         case 56:
+            if(displayingResult) {
+                break;
+            }
             numberInserted = true;
             populateDisplayWithKeyDown(currentDisplay, 8);
             break;
         case 57:
+            if(displayingResult) {
+                break;
+            }
             numberInserted = true;
             populateDisplayWithKeyDown(currentDisplay, 9);
             break;
         case 83:
+            if(displayingResult) {
+                break;
+            }
             signalChange(currentDisplay);
             break;
         case 187:
@@ -457,6 +490,9 @@ document.addEventListener("keyup", keyboardSupport);
             break;
         case 190:
             {
+                if(displayingResult) {
+                    break;
+                }
                 addDecimal(currentDisplay);
                 break;
             }
@@ -527,6 +563,5 @@ function joinHistoryArrayAndDisplay(historyArray, chosenSignal, previousNumber, 
         historyDisplay.textContent = historyOfOperations;
     }
 }
-
 
 });
