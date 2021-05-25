@@ -71,6 +71,7 @@ function newInput(e) {
             }
             switch (pressedButton.id) {
                 case "back":
+                    // prevent operations if displayingResult
                     if(displayingResult)
                     {
                         break;
@@ -81,6 +82,7 @@ function newInput(e) {
                     clearEverything(historyDisplay, currentDisplay, historyArray);
                     break;
                 case "add":
+                    // prevent operations if displayingResult or DisplayisEmpty
                     if(currentDisplayIsEmpty(currentDisplay) || displayingResult) {
                         break;
                     }
@@ -92,6 +94,7 @@ function newInput(e) {
                     }
                     break;
                 case "subtract":
+                    // prevent operations if displayingResult or DisplayisEmpty
                     if(currentDisplayIsEmpty(currentDisplay) || displayingResult) {
                         break;
                     }
@@ -103,6 +106,7 @@ function newInput(e) {
                     }
                     break;
                 case "division":
+                    // prevent operations if displayingResult or DisplayisEmpty
                     if(currentDisplayIsEmpty(currentDisplay) || displayingResult) {
                         break;
                     }
@@ -114,6 +118,7 @@ function newInput(e) {
                     }
                     break;
                 case "multiply":
+                    // prevent operations if displayingResult or DisplayisEmpty
                     if(currentDisplayIsEmpty(currentDisplay) || displayingResult) {
                         break;
                     }
@@ -125,6 +130,7 @@ function newInput(e) {
                     }
                     break;
                 case "power":
+                    // prevent operations if displayingResult or DisplayisEmpty
                     if(currentDisplayIsEmpty(currentDisplay) || displayingResult) {
                         break;
                     }
@@ -136,21 +142,21 @@ function newInput(e) {
                     }
                     break;
                 case "equals":
-                    // prevents user from clicking "=" multiple times or before inserting a number
+                    // prevents user from clicking "=" multiple times and before inserting a number
                     if (chosenOperator === "" || !previousNumber) {
                         return;
                     }
                     updateDisplayWithFinalResult();
-                    // sets chosenOperator to "" and isFirstCalculation to true
-                    resetIsFirstCalculation();
+                    // sets chosenOperator to ""
                     resetChosenOperator();
-                    // allow user to insert new numbers after 'EQUALS'.
+                    // make user unable to insert new numbers and operations after 'EQUALS'.
                     displayingResult = true;
                     ToggleHighlightClearButton(displayingResult);
                     displayHistory(historyArray, undefined, undefined, presentNumber);
                     isFirstNumberAfterCalculation = true
                     break;
                 case "signalChange":
+                    // prevent operations when displayingResult
                     if(displayingResult)
                     {
                         break;
@@ -160,6 +166,7 @@ function newInput(e) {
                     }           
                        break;
                 case "decimal":
+                    // prevent operations if displayingResult or DisplayisEmpty
                     if(displayingResult)
                     {
                         break;
@@ -220,8 +227,8 @@ function prepareCalculation(pressedButtonId, keyboardChoice) {
 function makeCalculation(pressedButtonId, keyboardChoice) {
     presentNumber = currentDisplay.textContent;
     let result = operate(chosenOperator, previousNumber, presentNumber);
-    previousNumber = result;
     updateDisplay(result);
+    previousNumber = result;
     isFirstNumberAfterCalculation = true;
     if(!keyboardChoice) {
     chosenOperator = pressedButtonId;
@@ -233,12 +240,6 @@ function makeCalculation(pressedButtonId, keyboardChoice) {
 }
 
 let updateDisplay = (displayValue) => currentDisplay.textContent = `${displayValue}`;
-
-function updateDisplayWithFinalResult() {
-    presentNumber = currentDisplay.textContent;
-    let result = operate(chosenOperator, previousNumber, presentNumber);
-    updateDisplay(result);
-}
 
 // FUNCTIONS FOR CLEARING DISPLAY AND CALCULATOR
 let clearCurrentDisplay = () => currentDisplay.textContent = "";
@@ -308,6 +309,7 @@ function populateDisplayWithButton(currentDisplay, pressedButton) {
         }
 }
 
+// POPULATE CURRENT DISPLAY WITH CLICKED KEY
 function populateDisplayWithKeyDown(currentDisplay, number) {
     if(currentNumberIsZero(currentDisplay)) {
         updateDisplay(number);
@@ -355,8 +357,14 @@ function maxDigitRuleRespected(currentDisplay) {
 }
 
 // RUNS AFTER PRESSING "EQUALS" 
-let resetIsFirstCalculation = () => isFirstCalculation = true;
+function updateDisplayWithFinalResult() {
+    presentNumber = currentDisplay.textContent;
+    let result = operate(chosenOperator, previousNumber, presentNumber);
+    updateDisplay(result);
+}
+
 let resetChosenOperator = () =>  chosenOperator = "";
+
 function ToggleHighlightClearButton(displayingResult) {
     if(displayingResult) {
         clear.classList.add("clearButtonHighlight");
@@ -366,7 +374,7 @@ function ToggleHighlightClearButton(displayingResult) {
     }
 }
 
-// // Keyboard Support
+// // Keyboard Support - Listens for Key presses
 document.addEventListener("keyup", keyboardSupport);
 
  function keyboardSupport(e) {
@@ -382,8 +390,9 @@ document.addEventListener("keyup", keyboardSupport);
                 return;
             }
             updateDisplayWithFinalResult();
-            resetIsFirstCalculation();
+            // sets chosenOperator to ""
             resetChosenOperator();
+             // make user unable to insert new numbers and operations after 'EQUALS'.
             displayingResult = true;
             ToggleHighlightClearButton(displayingResult);
             displayHistory(historyArray, undefined, undefined, presentNumber);
@@ -540,7 +549,7 @@ document.addEventListener("keyup", keyboardSupport);
     }
 }
 
-// FUNCTIONS THAT DISPLAY HISTORY
+// FUNCTIONS THAT DISPLAY HISTORY OF CALCULATIONS
 function displayHistory(historyArray, chosenOperator, previousNumber, presentNumber) {
     if(displayingResult) {
         historyArray.push(presentNumber);
