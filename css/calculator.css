@@ -1,3 +1,4 @@
+@media only screen and (min-width: 1092px) {
 body {
     background-color: #d4fc79 ;
 }
@@ -75,6 +76,10 @@ button:hover {
     }
 }
 
+/* Disable Double Tap Zoom on Touch Devices */
+.disable-dbl-tap-zoom {
+    touch-action: manipulation;
+  }
 /* EFFECT WHEN CALCULATOR IS DISPLAYING RESULT */
 .clearButtonHighlight {
     animation-name: highlightCE;
@@ -214,4 +219,5 @@ button:hover {
 
 #footer svg {
     margin-left: 7px;
+}
 }
