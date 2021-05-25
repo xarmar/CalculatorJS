@@ -1,0 +1,224 @@
+@media only screen and (max-width: 1092px) {
+body {
+    background-color: #d4fc79 ;
+}
+
+#container {
+    width: 100%;
+    margin-top: 25%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#reducedContainer {
+    margin-top: 6%;
+    max-width: 85%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+output {
+    background: rgba(220, 220, 220, 0.604);
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding-right: 20px;
+    min-height: 25px;
+}
+
+#historyDisplay {
+    font-size: 150%;
+}
+
+#currentDisplay {
+    font-size: 200%;
+}
+
+#calculator button {
+    border: 1px solid grey;;
+}
+.deleteKeys, .operator {
+    background-color: gainsboro;
+}
+
+/* CLICK AND HOVER EFFECTS */
+button:hover {
+    transform: scale(1.03);
+    padding:1px;
+    border: 1px solid #96e6a1;;
+    box-shadow: 0 0 0.5em #96e6a1;
+}
+
+.deleteKeys:hover {
+    transform: scale(1.03);
+    padding:1px;
+    border: 1px solid #96e6a1;;
+    box-shadow: 0 0 0.5em coral;
+}
+
+.operator:hover {
+    transform: scale(1.03);
+    padding: 1px;
+    border: 1px solid #96e6a1;;
+    box-shadow: 0 0 0.5em gold;
+}
+
+.increaseEffect {
+    animation-name: increaseEffect;
+    animation-iteration-count: 1;
+    animation-duration: 0.07s;
+}
+
+@keyframes increaseEffect {
+    0% {
+    }
+    100% {
+    transform: scale(1.15);
+    }
+}
+
+/* Disable Double Tap Zoom on Touch Devices */
+.disable-dbl-tap-zoom {
+    touch-action: manipulation;
+  }
+/* EFFECT WHEN CALCULATOR IS DISPLAYING RESULT */
+.clearButtonHighlight {
+    animation-name: highlightCE;
+    animation-iteration-count: infinite;
+    animation-duration: 6s;
+}
+
+@keyframes highlightCE {
+
+    50% {
+        background-color: coral;
+    }
+
+}
+
+/* CALCULATOR DISPLAY ORDER */
+
+#calculator {
+    border: grey 5px solid;
+    border-radius: 1%;
+    display: grid;
+    grid-template-areas: 
+    "historyDisplay historyDisplay historyDisplay historyDisplay"
+    "currentDisplay currentDisplay currentDisplay currentDisplay"
+    "clear back power division"
+    "seven eight nine multiply"
+    "four five six subtract"
+    "one two three add"
+    "signChange zero decimal equals";
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: center;
+    max-width: 80%;
+    min-width: 20%;
+    min-height: 450px;
+}
+
+#historyDisplay {
+    grid-area: historyDisplay;
+}
+
+#currentDisplay {
+    grid-area: currentDisplay;
+}
+
+#zero {
+    grid-area: zero;
+}
+
+#one {
+    grid-area: one;
+}
+
+#two {
+    grid-area: two;
+}
+#three {
+    grid-area: three;
+}
+#four {
+    grid-area: four;
+}
+#five {
+    grid-area: five;
+}
+#six {
+    grid-area: six;
+}
+#seven {
+    grid-area: seven;
+}
+#eight {
+    grid-area: eight;
+}
+#nine {
+    grid-area: nine;
+}
+#clear {
+    grid-area: clear;
+}
+#back {
+    grid-area: back;
+}
+#power {
+    grid-area: power;
+}
+#division {
+    grid-area: division;
+}
+#multiply {
+    grid-area: multiply;
+}
+#add {
+    grid-area: add;
+}
+#subtract {
+    grid-area: subtract;
+}
+#equals {
+    grid-area: equals;
+}
+
+#decimal {
+    grid-area: decimal;
+}
+
+#signChange {
+    grid-area: signChange;
+}
+
+/* FOOTER */
+
+#footer {
+    display: flex;;
+    margin-bottom: 5px;
+    position: absolute;
+    height: 5%;
+    width: 99%;
+    background-color:#FFFFFF; 
+    text-align: center;
+    bottom: 0;
+}
+
+#footer p {
+    margin-left: auto;
+    margin-right: auto;
+    align-self: center;
+    justify-content: center;
+    align-content: center;
+}
+
+#footer a {
+    color: inherit;
+}
+
+#footer svg {
+    margin-left: 7px;
+}
+}
