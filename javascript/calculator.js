@@ -41,7 +41,7 @@ function increaseOnClick (e) {
         clickedButton.classList.remove("increaseEffect")
     }
 }
-
+// Prevent user from focusing on buttons with tab and other keyboard keys
 function preventFocus(event) {
     event.preventDefault();
     if (event.relatedTarget) {
@@ -53,7 +53,7 @@ function preventFocus(event) {
     }
   }
 
-// New User Input (Click or Keyboard)
+// New User Input (Clicks ONLY)
 function newInput(e) {
     let pressedButton = e.target;
     if (maxDigitRuleRespected(currentDisplay) || !pressedButton.classList.contains("number")) {
@@ -419,11 +419,14 @@ document.addEventListener("keyup", keyboardSupport);
             break;
         case 55:
             if(!e.shiftKey) {
+                if(displayingResult) {
+                    break;    
+                }
                 numberInserted = true;
                 populateDisplayWithKeyDown(currentDisplay, 7);
             }
             else {
-                if(currentDisplayIsEmpty(currentDisplay) || displayingResult) {
+                if(currentDisplayIsEmpty(currentDisplay)) {
                     break;
                 }
                 if(isFirstCalculation) {
@@ -513,6 +516,7 @@ document.addEventListener("keyup", keyboardSupport);
     }
 }
 
+// FUNCTIONS THAT DISPLAY HISTORY
 function displayHistory(historyArray, chosenOperator, previousNumber, presentNumber) {
     if(displayingResult) {
         historyArray.push(presentNumber);
