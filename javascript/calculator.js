@@ -17,6 +17,8 @@ let numberInserted;
 let chosenOperator;
 let presentNumber;
 let previousNumber;
+let historyOfOperations;
+let chosenSignal;
 
 // Reset Calculator
 clearEverything(historyDisplay, currentDisplay, historyArray);
@@ -74,7 +76,7 @@ function newInput(e) {
                     clearEverything(historyDisplay, currentDisplay, historyArray)
                     break;
                 case "add":
-                    if(currentDisplayIsEmpty(currentDisplay)) {
+                    if(currentDisplayIsEmpty(currentDisplay) || displayingResult) {
                         break;
                     }
                     if(isFirstCalculation) {
@@ -85,7 +87,7 @@ function newInput(e) {
                     }
                     break;
                 case "subtract":
-                    if(currentDisplayIsEmpty(currentDisplay)) {
+                    if(currentDisplayIsEmpty(currentDisplay) || displayingResult) {
                         break;
                     }
                     if(isFirstCalculation) {
@@ -96,7 +98,7 @@ function newInput(e) {
                     }
                     break;
                 case "division":
-                    if(currentDisplayIsEmpty(currentDisplay)) {
+                    if(currentDisplayIsEmpty(currentDisplay) || displayingResult) {
                         break;
                     }
                     if(isFirstCalculation) {
@@ -107,7 +109,7 @@ function newInput(e) {
                     }
                     break;
                 case "multiply":
-                    if(currentDisplayIsEmpty(currentDisplay)) {
+                    if(currentDisplayIsEmpty(currentDisplay) || displayingResult) {
                         break;
                     }
                     if(isFirstCalculation) {
@@ -118,7 +120,7 @@ function newInput(e) {
                     }
                     break;
                 case "power":
-                    if(currentDisplayIsEmpty(currentDisplay)) {
+                    if(currentDisplayIsEmpty(currentDisplay) || displayingResult) {
                         break;
                     }
                     if(isFirstCalculation) {
@@ -139,6 +141,7 @@ function newInput(e) {
                     resetChosenOperator();
                     // allow user to insert new numbers after 'EQUALS'.
                     displayingResult = true;
+                    displayHistory(historyArray, undefined, undefined, presentNumber);
                     isFirstNumberAfterCalculation = true
                     break;
                 case "signalChange":
@@ -197,6 +200,7 @@ function prepareCalculation(pressedButtonId, keyboardChoice) {
     if(!pressedButtonId) {
         chosenOperator = keyboardChoice;
     }
+    displayHistory(historyArray, chosenOperator, previousNumber, undefined);
     isFirstCalculation  = false;
 }
 function makeCalculation(pressedButtonId, keyboardChoice) {
@@ -211,6 +215,7 @@ function makeCalculation(pressedButtonId, keyboardChoice) {
     if(!pressedButtonId) {
         chosenOperator = keyboardChoice;
     }
+    displayHistory(historyArray, chosenOperator, previousNumber, result);
 }
 
 let updateDisplay = (displayValue) => currentDisplay.textContent = `${displayValue}`;
@@ -231,6 +236,7 @@ function clearEverything(history, currentDisplay, historyArray) {
     history.textContent = "";
     currentDisplay.textContent = "";
     historyArray.splice(0, historyArray.length);
+    historyDisplay.textContent = historyArray;
 }
 
 function backspace(currentDisplay) {
@@ -353,6 +359,7 @@ document.addEventListener("keyup", keyboardSupport);
             resetIsFirstCalculation();
             resetChosenOperator();
             displayingResult = true;
+            displayHistory(historyArray, undefined, undefined, presentNumber);
             isFirstNumberAfterCalculation = true
             break;
         case 46:
@@ -392,6 +399,9 @@ document.addEventListener("keyup", keyboardSupport);
                 populateDisplayWithKeyDown(currentDisplay, 7);
             }
             else {
+                if(currentDisplayIsEmpty(currentDisplay) || displayingResult) {
+                    break;
+                }
                 if(isFirstCalculation) {
                     prepareCalculation(undefined, "division");
                 }
@@ -411,6 +421,9 @@ document.addEventListener("keyup", keyboardSupport);
             signalChange(currentDisplay);
             break;
         case 187:
+            if(currentDisplayIsEmpty(currentDisplay) || displayingResult) {
+                break;
+            }
             if(!e.shiftKey) {
                 if(isFirstCalculation) {
                     prepareCalculation(undefined, "add");
@@ -420,6 +433,9 @@ document.addEventListener("keyup", keyboardSupport);
                 }
             }
             else {
+                if(currentDisplayIsEmpty(currentDisplay) || displayingResult) {
+                    break;
+                }
                 if(isFirstCalculation) {
                     prepareCalculation(undefined, "multiply");
                 }
@@ -429,6 +445,9 @@ document.addEventListener("keyup", keyboardSupport);
             }
             break;
         case 189:
+            if(currentDisplayIsEmpty(currentDisplay) || displayingResult) {
+                break;
+            }
             if(isFirstCalculation) {
                 prepareCalculation(undefined, "subtract");
             }
@@ -442,6 +461,9 @@ document.addEventListener("keyup", keyboardSupport);
                 break;
             }
         case 220:
+            if(currentDisplayIsEmpty(currentDisplay) || displayingResult) {
+                break;
+            }
             if(e.shiftKey) {
                 if(isFirstCalculation) {
                     prepareCalculation(undefined, "power");
@@ -455,45 +477,56 @@ document.addEventListener("keyup", keyboardSupport);
     }
 }
 
+function displayHistory(historyArray, chosenOperator, previousNumber, presentNumber) {
+    if(displayingResult) {
+        historyArray.push(presentNumber);
+        historyArray.push("=");
+        historyOfOperations = historyArray.join(" ");
+        historyDisplay.textContent = historyOfOperations;
+    }
+    else {
+        switch (chosenOperator) {
+            case "add":
+                chosenSignal = "+"
+                joinHistoryArrayAndDisplay(historyArray, chosenSignal, previousNumber, presentNumber);
+                break;
+            case "subtract":
+                chosenSignal = "-"
+                joinHistoryArrayAndDisplay(historyArray, chosenSignal, previousNumber, presentNumber);
+                break;
+            case "multiply":
+                chosenSignal = "*"
+                joinHistoryArrayAndDisplay(historyArray, chosenSignal, previousNumber, presentNumber);
+                break;
+            case "division":
+                chosenSignal = "/"
+                joinHistoryArrayAndDisplay(historyArray, chosenSignal, previousNumber, presentNumber);
+                break;
+            case "power":
+                chosenSignal = "^"
+                joinHistoryArrayAndDisplay(historyArray, chosenSignal, previousNumber, presentNumber);
+                break;
+            default:
+                break;
+        }
+    }   
+}
 
-
-// // POPULATE "HISTORY BAR" WITH PREVIOUS HISTORY
-// function updateHistory(chosenOperator, previousNumber, presentNumber) {
-//     switch (chosenOperator) {
-//         case "add":
-//             if(isFirstCalculation) {
-//             }
-//             else {
-//             }
-//             break;
-//         case "subtract":
-//             if(isFirstCalculation) {
-//             }
-//             else {
-//             }            
-//             break;
-//         case "division":
-//             if(isFirstCalculation) {
-//             }
-//             else {
-//             }
-//             break;
-//         case "multiply":
-//             if(isFirstCalculation) {
-//             }
-//             else {
-//             }
-//             break;
-//         case "power":
-//             if(isFirstCalculation) {
-//             }
-//             else {
-//             }
-//             break;
-//         default:
-//             break;
-//     }   
-// }
+function joinHistoryArrayAndDisplay(historyArray, chosenSignal, previousNumber, presentNumber) {
+    if (isFirstCalculation) {
+        historyArray.push(previousNumber);
+        historyArray.push(chosenSignal)
+        historyOfOperations = historyArray.join(" ");
+        historyDisplay.textContent = historyOfOperations;
+    }
+    else {
+        historyArray.splice(0, historyArray.length);
+        historyArray.push(presentNumber);
+        historyArray.push(chosenSignal);
+        historyOfOperations = historyArray.join(" ");
+        historyDisplay.textContent = historyOfOperations;
+    }
+}
 
 
 });
