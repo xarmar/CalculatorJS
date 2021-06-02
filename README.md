@@ -4,3 +4,4 @@
 
 # What I Learned
 - Array manipulation and DOM manipulation.  
+- How to break down complex problems into small achievable tasks.
